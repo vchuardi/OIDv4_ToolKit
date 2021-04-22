@@ -150,7 +150,7 @@ def bounding_boxes_images(args, DEFAULT_OID_DIR):
 		while (True):
 			if flag == 0:
 				print("Which folder do you want to visualize (train, test, validation)? <exit>")
-				image_dir = input("> ")
+				image_dir = 'train'
 				flag = 1
 
 				if image_dir == 'exit':
@@ -161,7 +161,7 @@ def bounding_boxes_images(args, DEFAULT_OID_DIR):
 				print("Which class? <exit>")
 				show_classes(os.listdir(class_image_dir))
 
-				class_name = input("> ")
+				class_name = 'Helmet'
 				if class_name == 'exit':
 					exit(1)
 
@@ -177,18 +177,19 @@ def bounding_boxes_images(args, DEFAULT_OID_DIR):
 
 			index = 0
 
-			print(dedent("""
-                --------------------------------------------------------
-                INFO:
-                        - Press 'd' to select next image
-                        - Press 'a' to select previous image
-                        - Press 'e' to select a new class
-                        - Press 'w' to select a new folder
-                        - Press 'q' to exit
-                  You can resize the window if it's not optimal
-                --------------------------------------------------------
-                """))
+			# print(dedent("""
+            #     --------------------------------------------------------
+            #     INFO:
+            #             - Press 'd' to select next image
+            #             - Press 'a' to select previous image
+            #             - Press 'e' to select a new class
+            #             - Press 'w' to select a new folder
+            #             - Press 'q' to exit
+            #       You can resize the window if it's not optimal
+            #     --------------------------------------------------------
+            #     """))
 
+			print(class_name, download_dir, label_dir,len(os.listdir(download_dir))-1, index)
 			show(class_name, download_dir, label_dir,len(os.listdir(download_dir))-1, index)
 
 			while True:

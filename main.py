@@ -22,8 +22,10 @@ from modules.show import *
 from modules.csv_downloader import *
 from modules.bounding_boxes import *
 from modules.image_level import *
+import ssl
 
 
+ssl._create_default_https_context = ssl._create_unverified_context
 ROOT_DIR = ''
 DEFAULT_OID_DIR = os.path.join(ROOT_DIR, 'OID')
 

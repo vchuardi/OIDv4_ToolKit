@@ -31,25 +31,25 @@ def error_csv(file, csv_dir, args_y):
     '''
     if not os.path.isfile(os.path.join(csv_dir, file)):
         print(bc.FAIL + "Missing the {} file.".format(os.path.basename(file)) + bc.ENDC)
-        if args_y:
-            ans = 'y'
-            print(bc.OKBLUE + "Automatic download." + bc.ENDC)
+        # if args_y:
+        #     ans = 'y'
+        #     print(bc.OKBLUE + "Automatic download." + bc.ENDC)
+        # else:
+        #     ans = input(bc.OKBLUE + "Do you want to download the missing file? [Y/n] " + bc.ENDC)
+
+        # if ans.lower() == 'y':
+        folder = str(os.path.basename(file)).split('-')[0]
+        if folder != 'class':
+            FILE_URL = str(OID_URL + folder + '/' + file)
         else:
-            ans = input(bc.OKBLUE + "Do you want to download the missing file? [Y/n] " + bc.ENDC)
+            FILE_URL = str(OID_URL + file)
 
-        if ans.lower() == 'y':
-            folder = str(os.path.basename(file)).split('-')[0]
-            if folder != 'class':
-                FILE_URL = str(OID_URL + folder + '/' + file)
-            else:
-                FILE_URL = str(OID_URL + file)
+        FILE_PATH = os.path.join(csv_dir, file)
+        save(FILE_URL, FILE_PATH)
+        print('\n' + bc.OKBLUE + "File {} downloaded into {}.".format(file, FILE_PATH) + bc.ENDC)
 
-            FILE_PATH = os.path.join(csv_dir, file)
-            save(FILE_URL, FILE_PATH)
-            print('\n' + bc.OKBLUE + "File {} downloaded into {}.".format(file, FILE_PATH) + bc.ENDC)
-
-        else:
-            exit(1)
+        # else:
+        #     exit(1)
 
 def save(url, filename):
     '''

@@ -1,3 +1,12 @@
-Apple
-Orange
-Light switch
+Hat
+Helmet
+Coat
+Dress
+Jacket
+Jeans
+Skirt
+Shirt
+Shorts
+Suit
+Trousers
+Person

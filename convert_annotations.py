@@ -2,8 +2,7 @@ import os
 import cv2
 import numpy as np
 from tqdm import tqdm
-import argparse
-import fileinput
+import shutil
 
 # function that turns XMin, YMin, XMax, YMax coordinates to normalized yolo format
 def convert(filename_str, coords):
@@ -75,5 +74,6 @@ for DIR in DIRS:
                             outfile.close()
                         os.chdir("Label")
                 os.chdir("..")
+                shutil.rmtree("Label")
                 os.chdir("..")
         os.chdir("..")
