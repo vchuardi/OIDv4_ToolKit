@@ -5,7 +5,8 @@ from modules.utils import images_options
 from modules.utils import bcolors as bc
 from multiprocessing.dummy import Pool as ThreadPool
 
-def download(args, df_val, folder, dataset_dir, class_name, class_code, class_list=None, threads = 20):
+
+def download(args, df_val, folder, dataset_dir, class_name, class_code, class_list=None, threads=20):
     '''
     Manage the download of the images and the label maker.
     :param args: argument parser.
@@ -29,13 +30,15 @@ def download(args, df_val, folder, dataset_dir, class_name, class_code, class_li
         columns = 50
     l = int((int(columns) - len(class_name))/2)
 
-    print ('\n' + bc.HEADER + '-'*l + class_name + '-'*l + bc.ENDC)
+    print('\n' + bc.HEADER + '-'*l + class_name + '-'*l + bc.ENDC)
     print(bc.INFO + 'Downloading {} images.'.format(args.type_csv) + bc.ENDC)
     df_val_images = images_options(df_val, args)
 
-    images_list = df_val_images['ImageID'][df_val_images.LabelName == class_code].values
+    images_list = df_val_images['ImageID'][df_val_images.LabelName ==
+                                           class_code].values
     images_list = set(images_list)
-    print(bc.INFO + '[INFO] Found {} online images for {}.'.format(len(images_list), folder) + bc.ENDC)
+    print(bc.INFO + '[INFO] Found {} online images for {}.'.format(
+        len(images_list), folder) + bc.ENDC)
 
     if args.limit is not None:
         import itertools
@@ -49,7 +52,8 @@ def download(args, df_val, folder, dataset_dir, class_name, class_code, class_li
 
     download_img(folder, dataset_dir, class_name_list, images_list, threads)
     if not args.sub:
-        get_label(folder, dataset_dir, class_name, class_code, df_val, class_name_list, args)
+        get_label(folder, dataset_dir, class_name,
+                  class_code, df_val, class_name_list, args)
 
 
 def download_img(folder, dataset_dir, class_name, images_list, threads):
@@ -64,7 +68,8 @@ def download_img(folder, dataset_dir, class_name, images_list, threads):
     '''
     image_dir = folder
     download_dir = os.path.join(dataset_dir, image_dir, class_name)
-    downloaded_images_list = [f.split('.')[0] for f in os.listdir(download_dir)]
+    downloaded_images_list = [f.split('.')[0]
+                              for f in os.listdir(download_dir)]
     images_list = list(set(images_list) - set(downloaded_images_list))
 
     pool = ThreadPool(threads)
@@ -73,17 +78,18 @@ def download_img(folder, dataset_dir, class_name, images_list, threads):
         print(bc.INFO + 'Download of {} images in {}.'.format(len(images_list), folder) + bc.ENDC)
         commands = []
         for image in images_list:
-            path = image_dir + '/' + str(image) + '.jpg ' + '"' + download_dir + '"'
-            command = 'aws s3 --no-sign-request --only-show-errors cp s3://open-images-dataset/' + path                    
+            path = image_dir + '/' + \
+                str(image) + '.jpg ' + '"' + download_dir + '"'
+            command = 'aws s3 --no-sign-request --only-show-errors cp s3://open-images-dataset/' + path
             commands.append(command)
 
-        list(tqdm(pool.imap(os.system, commands), total = len(commands) ))
+        list(tqdm(pool.imap(os.system, commands), total=len(commands)))
 
         print(bc.INFO + 'Done!' + bc.ENDC)
         pool.close()
         pool.join()
     else:
-        print(bc.INFO + 'All images already downloaded.' +bc.ENDC)
+        print(bc.INFO + 'All images already downloaded.' + bc.ENDC)
 
 
 def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, args):
@@ -98,7 +104,8 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
     :return: None
     '''
     if not args.noLabels:
-        print(bc.INFO + 'Creating labels for {} of {}.'.format(class_name, folder) + bc.ENDC)
+        print(
+            bc.INFO + 'Creating labels for {} of {}.'.format(class_name, folder) + bc.ENDC)
 
         image_dir = folder
         if class_list is not None:
@@ -108,15 +115,18 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
             download_dir = os.path.join(dataset_dir, image_dir, class_name)
             label_dir = os.path.join(dataset_dir, folder, class_name, 'Label')
 
-        downloaded_images_list = [f.split('.')[0] for f in os.listdir(download_dir) if f.endswith('.jpg')]
+        downloaded_images_list = [f.split('.')[0] for f in os.listdir(
+            download_dir) if f.endswith('.jpg')]
         images_label_list = list(set(downloaded_images_list))
 
-        groups = df_val[(df_val.LabelName == class_code)].groupby(df_val.ImageID)
+        groups = df_val[(df_val.LabelName == class_code)
+                        ].groupby(df_val.ImageID)
         for image in images_label_list:
             try:
                 current_image_path = os.path.join(download_dir, image + '.jpg')
                 dataset_image = cv2.imread(current_image_path)
-                boxes = groups.get_group(image.split('.')[0])[['XMin', 'XMax', 'YMin', 'YMax']].values.tolist()
+                boxes = groups.get_group(image.split('.')[0])[
+                    ['XMin', 'XMax', 'YMin', 'YMax']].values.tolist()
                 file_name = str(image.split('.')[0]) + '.txt'
                 file_path = os.path.join(label_dir, file_name)
                 if os.path.isfile(file_path):
