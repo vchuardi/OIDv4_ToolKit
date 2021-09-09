@@ -44,6 +44,9 @@ for DIR in DIRS:
         # for all class folders step into directory to change annotations
         for CLASS_DIR in CLASS_DIRS:
             if os.path.isdir(CLASS_DIR):
+                if not os.path.isdir(CLASS_DIR + '/Label'):
+                    print(CLASS_DIR, ' no label')
+                    continue
                 os.chdir(CLASS_DIR)
                 print("Converting annotations for class: ", CLASS_DIR)
                 
